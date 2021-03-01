@@ -1,0 +1,13 @@
+﻿# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/modules.xml
+/contentModel.xml
+/projectSettingsUpdater.xml
+/.idea.identityserver4-plus.iml
+# Datasource local storage ignored files
+/../../../../../../../../:\AV\Projects\github\identityserver4-plus\.idea\.idea.identityserver4-plus\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
