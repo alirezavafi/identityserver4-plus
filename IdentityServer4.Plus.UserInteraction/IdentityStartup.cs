@@ -18,6 +18,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using AutoWrapper;
+using CoreLib.Services.Otp;
 
 namespace SSO.Identity
 {

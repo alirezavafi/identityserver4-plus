@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Serilog;
-using Serilog.Context;
 using SSO.Identity;
 using SSO.Models;
 using System;
@@ -20,6 +18,9 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoWrapper.Wrappers;
+using CoreLib.Services.Otp;
+using Serilog;
+using Serilog.Context;
 
 namespace SSO.Controllers
 {
@@ -31,7 +32,7 @@ namespace SSO.Controllers
         private readonly IOtpService _otp;
         private readonly IIdentityServerInteractionService _identityServerInteractionService;
         private readonly IEventService _events;
-        private readonly ISmsServices _smsServices; 
+        private readonly ISmsService _smsService; 
         private readonly ILogger _logger;
         private readonly IConfiguration configuration;
 
@@ -42,7 +43,7 @@ namespace SSO.Controllers
                IOtpService otp,
                IIdentityServerInteractionService identityServerInteractionService,
                IEventService events,
-               ISmsServices smsServices,
+               ISmsService smsService,
                ILogger logger,
                IConfiguration configuration)
         {
@@ -50,7 +51,7 @@ namespace SSO.Controllers
             _otp = otp;
             _identityServerInteractionService = identityServerInteractionService;
             _events = events;
-            _smsServices = smsServices;
+            _smsService = smsService;
             _logger = logger;
             this.configuration = configuration;
         }
@@ -93,7 +94,7 @@ namespace SSO.Controllers
         private async Task SendOtpCode(string mobileNumber, string otpCode)
         {
             _logger.Verbose("Sending {@Otp}", otpCode);
-            var result = await _smsServices.Send(new OutgoingSms()
+            var result = await _smsService.Send(new OutgoingSms()
             {
                 Reciever = mobileNumber,
                 Text = $"اقتصاد بیدار\r\nکد فعال سازی شما: {otpCode}"

@@ -1,8 +1,4 @@
-﻿//using ISmsBiz = Business.Interfaces.System.ISmsBiz;
-
-using System.IO;
-
-namespace SSO
+﻿namespace SSO
 {
     public static class Constants
     {

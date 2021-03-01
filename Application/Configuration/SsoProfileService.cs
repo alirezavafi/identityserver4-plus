@@ -97,4 +97,4 @@ namespace Jp.UI.SSO.Configuration
             context.IsActive = !isBlocked;
         }
     }
-}
+}//////

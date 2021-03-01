@@ -10,7 +10,7 @@ namespace SSO.Models
         private string visitorCode;
 
         [Required]
-        [StringLength(15)]
+        [ValidIra]
         public string MobileNumber { get => mobileNumber; set => mobileNumber = value.ConvertEnglishChar(); }
         [Required]
         [StringLength(10)]
