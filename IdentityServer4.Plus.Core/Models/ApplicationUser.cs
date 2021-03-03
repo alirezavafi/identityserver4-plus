@@ -14,9 +14,10 @@ namespace SSO.Identity
         public string PasswordHash { get; set; }
         public string SecurityStamp { get; set; } = Guid.NewGuid().ToString();
         public string NormalizedUserName { get; set; }
+        public string CountryCode { get; set; }
         public string AuthenticationType { get; set; }
         public bool IsAuthenticated { get; set; }
-        public string NationalCode { get; set; }
+        public string UserIdentityNumber { get; set; }
         public DateTimeOffset? LockoutEndDate { get; set; } = new DateTime(2000, 1, 1);
         public DateTimeOffset? LastSuccessfullLogin { get; set; }
         public bool LockoutEnabled { get; set; } = true;
