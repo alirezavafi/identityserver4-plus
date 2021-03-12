@@ -3,6 +3,7 @@ using JPProject.Domain.Core.ViewModels;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SSO.Identity;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace JPProject.Admin.Api.Configuration
@@ -15,7 +16,7 @@ namespace JPProject.Admin.Api.Configuration
             // services.AddDbContext<EventStoreContext>(ProviderSelector.WithProviderAutoSelection(DetectDatabase(configuration)));
 
             services
-                .ConfigureJpAdminServices<AspNetUser>()
+                .ConfigureJpAdminServices<ApplicationUser>()
                 .ConfigureJpAdminStorageServices();
                 // .AddJpAdminContext(ProviderSelector.WithProviderAutoSelection(DetectDatabase(configuration)))
                 // .AddEventStore<EventStoreContext>();
