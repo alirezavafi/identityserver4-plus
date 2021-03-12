@@ -240,6 +240,8 @@ namespace SSO.Identity
 		public abstract Task<ApplicationUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken = default);
 		public abstract Task<ApplicationUser> FindByEmailAsync(string email, CancellationToken cancellationToken = default);
 		public abstract Task<List<ApplicationUser>> FindByPhoneNumberAsync(string mobile, CancellationToken cancellationToken = default);
+		public abstract Task<List<ApplicationUser>> FindByAnyIdentifierAsync(string identifier, CancellationToken cancellationToken = default);
+		
 
 		#region IDisposable
 

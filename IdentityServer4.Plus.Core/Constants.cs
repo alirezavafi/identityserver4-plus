@@ -1,4 +1,4 @@
-﻿namespace SSO
+﻿namespace IdentityServer4.Plus.Core
 {
     public static class Constants
     {

@@ -1,26 +1,24 @@
-﻿using DataAccess.EFModels;
+﻿using System;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
+using CoreLib.Services.Otp;
+using DataAccess.EFModels;
 using IdentityServer4.Configuration;
 using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.Plus.Core;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SSO.Identity;
 using SSO.Identity.Stores.EntityFramework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using AutoWrapper;
-using CoreLib.Services.Otp;
 
-namespace SSO.Identity
+namespace IdentityServer4.Plus.Modules.Authentication
 {
     public class IdentityServerPlusOptions
     {
@@ -38,6 +36,9 @@ namespace SSO.Identity
             services.AddDataProtection()
                     .SetApplicationName("Customers-SSO")
                     .PersistKeysToDbContext<IdentityServerDataProtectionDbContext>();
+            services.AddDbContextPool<IdentityServerDataProtectionDbContext>(opt.DbContextConfiguration);
+            services.AddDbContextPool<ApplicationIdentityDbContext>(opt.DbContextConfiguration);
+            services.AddDbContext<ConfigurationDbContext>(opt.DbContextConfiguration);
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
                 {
@@ -72,9 +73,9 @@ namespace SSO.Identity
                         options.Events.RaiseInformationEvents = true;
                         options.Events.RaiseFailureEvents = true;
                         options.Events.RaiseSuccessEvents = true;
-                        options.UserInteraction.LoginUrl = "/ui/login";
-                        options.UserInteraction.LogoutUrl = "/ui/logout";
-                        options.UserInteraction.ErrorUrl = "/ui/error";
+                        // options.UserInteraction.LoginUrl = "/ui/login";
+                        // options.UserInteraction.LogoutUrl = "/ui/logout";
+                        // options.UserInteraction.ErrorUrl = "/ui/error";
                         options.Authentication = new AuthenticationOptions()
                         {
                             CookieLifetime = TimeSpan.FromMinutes(opt.SsoLifeTimeInMinutes),
@@ -145,6 +146,12 @@ namespace SSO.Identity
 
         public static void UseApplicationIdentityServer(this IApplicationBuilder app)
         {
+            app.UseStaticFiles(new StaticFileOptions {
+                FileProvider = new ManifestEmbeddedFileProvider (
+                    assembly: typeof(IdentityStartup).Assembly,
+                    root: "wwwroot")
+            });
+            app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

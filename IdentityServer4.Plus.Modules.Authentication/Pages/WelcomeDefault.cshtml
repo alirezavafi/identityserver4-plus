@@ -1,0 +1,45 @@
+﻿@page
+@model IdentityServer4.Plus.Modules.Authentication.Pages.Welcome
+
+@{
+    Layout = "_Layout";
+}
+
+<form class="login100-form validate-form">
+    <span class="login100-form-title p-b-37">
+        Sign In
+    </span>
+
+    <div class="wrap-input100 validate-input m-b-20" data-validate="Enter national identity, mobile or email">
+        <input class="input100" type="text" name="username" placeholder="username or emailnational identity, mobile or email">
+        <span class="focus-input100"></span>
+    </div>
+
+    <div class="container-login100-form-btn">
+        <button class="login100-form-btn">
+            Sign In
+        </button>
+    </div>
+
+    <div class="text-center p-t-57 p-b-20">
+        <span class="txt1">
+            Or login with
+        </span>
+    </div>
+
+    <div class="flex-c p-b-112">
+        <a href="assets/#" class="login100-social-item">
+            <i class="fa fa-facebook-f"></i>
+        </a>
+
+        <a href="assets/#" class="login100-social-item">
+            <img src="/assets/images/icons/icon-google.png" alt="GOOGLE">
+        </a>
+    </div>
+
+    <div class="container-login100-form-btn">
+        <button class="login100-form-btn">
+            Create Account
+        </button>
+    </div>
+</form>

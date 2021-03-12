@@ -13,5 +13,7 @@ namespace SSO.Identity
 						 IUserPhoneNumberStore<ApplicationUser>
 	{
 		Task<List<ApplicationUser>> FindByPhoneNumberAsync(string mobile, CancellationToken cancellationToken = default);
+		Task<List<ApplicationUser>> FindByAnyIdentifierAsync(string identifier, CancellationToken cancellationToken = default);
+		
 	}
 }

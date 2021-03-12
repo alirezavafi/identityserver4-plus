@@ -31,13 +31,9 @@ namespace SSO.Identity
             return Task.FromResult(user.LogonEnabled);
         }
 
-		public Task<List<ApplicationUser>> FindAllByPhoneNumberAsync(string mobile, CancellationToken cancellationToken = default)
+		public Task<List<ApplicationUser>> FindAllByAnyIdentifierAsync(string identifier, CancellationToken cancellationToken = default)
         {
-			return store.FindByPhoneNumberAsync(mobile, cancellationToken);
-        }
-        public async Task<ApplicationUser> FindFirstByPhoneNumberAsync(string mobile, CancellationToken cancellationToken = default)
-        {
-            return (await store.FindByPhoneNumberAsync(mobile, cancellationToken)).FirstOrDefault();
+			return store.FindByAnyIdentifierAsync(identifier, cancellationToken);
         }
     }
 }
