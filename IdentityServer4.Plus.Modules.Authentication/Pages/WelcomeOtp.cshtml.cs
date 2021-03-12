@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using CoreLib.Services.Otp;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Persian.Plus.Core.DataAnnotations;
-using Persian.Plus.Core.Extensions;
 using Serilog;
 using SSO.Controllers;
 using SSO.Identity;

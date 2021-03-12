@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+
+//== Vendor
+@import '~@fortawesome/fontawesome-free/css/all.min.css';
+@import '~simple-line-icons/css/simple-line-icons.css';
+@import '~spinkit/css/spinkit.css';
+@import '~loaders.css/loaders.css';
+@import '~angular2-toaster/toaster.css';
+@import '~codemirror/lib/codemirror.css';
+@import "~@ng-select/ng-select/themes/default.theme.css";
+//== Bootstrap
+@import "./app/shared/styles/bootstrap.scss";
+//== Application
+@import "./app/shared/styles/app.scss";
+.ng-invalid.ng-touched {
+    border-color: #f05050;
+}
+
+div.ng-invalid.ng-touched {}

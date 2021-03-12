@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Persian.Plus.Core.DataAnnotations;
-using Persian.Plus.Core.Extensions;
 using Serilog.Context;
 using SSO.Identity;
 using SSO.Models;
@@ -19,17 +17,14 @@ namespace IdentityServer4.Plus.UserInteraction.Pages.Register
         {
             
         }
-        private string nationalCode;
 
         [Required]
-        [NationalCode]
-        public string NationalCode { get => nationalCode; set => nationalCode = value.ToEnglishNumbers(); }
+        public string NationalCode { get; set; }
+
         [Required]
-        [PersianLetters]
         [StringLength(50)]
         public string FirstName { get; set; }
         [Required]
-        [PersianLetters]
         [StringLength(50)]
         public string LastName { get; set; }
         [EmailAddress]

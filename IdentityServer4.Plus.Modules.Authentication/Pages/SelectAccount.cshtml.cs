@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityServer4.Events;
 using Microsoft.AspNetCore.Authentication;
@@ -11,12 +12,14 @@ namespace IdentityServer4.Plus.UserInteraction.Pages.AccountSelection
 {
     public class SelectAccountPage : PageModel
     {
+        [Required]
+        [StringLength(2048)]
+        public string ReturnUrl { get; set; }
+        [StringLength(30)]
+        public string Username { get; set; }
+        
         public void OnGet()
         {
-        }
-
-        // public async Task<IActionResult> OnPost()
-        // {
         //     _logger.Verbose("Trying to authenticate user partially");
         //     var authResult = await HttpContext.AuthenticateAsync(Constants.PartialAuthenticationSchemeName);
         //     var authUser = authResult.Principal;
@@ -81,6 +84,6 @@ namespace IdentityServer4.Plus.UserInteraction.Pages.AccountSelection
         //     {
         //         IsLoggedIn = true,
         //     });
-        // }
+        }
     }
 }

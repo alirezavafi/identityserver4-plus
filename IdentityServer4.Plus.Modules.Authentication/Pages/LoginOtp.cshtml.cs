@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using IdentityServer4.Events;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Persian.Plus.Core.DataAnnotations;
-using Persian.Plus.Core.Extensions;
 using Serilog.Context;
 using SSO;
 using SSO.Models;
@@ -14,14 +12,16 @@ namespace IdentityServer4.Plus.UserInteraction
     public class LoginByOtpPage : PageModel
     {
         private string otpCode;
-        private string mobileNumber;
 
         [Required]
-        [IranianMobileNumber]
-        public string MobileNumber { get => mobileNumber; set => mobileNumber = value.ToEnglishNumbers(); }
+        public string MobileNumber
+        {
+            get;
+            set;
+        }
         [Required]
         [StringLength(10)]
-        public string OtpCode { get => otpCode; set => otpCode = value.ToEnglishNumbers().RemoveStartingZeroIfExists(); }
+        public string OtpCode { get => otpCode; set => otpCode = value.RemoveStartingZeroIfExists(); }
         [Required]
         [StringLength(2048)]
         public string ReturnUrl { get; set; }

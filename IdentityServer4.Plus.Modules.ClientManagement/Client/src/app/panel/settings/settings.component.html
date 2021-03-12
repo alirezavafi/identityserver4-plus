@@ -1,0 +1,44 @@
+<div class="content-heading">
+    <div>
+        💻 {{ 'general.settings' | translate }}
+        <small><b> {{ 'settings.description' | translate }}</b></small>
+    </div>
+</div>
+
+<div *ngIf="errors.length > 0">
+    <alert type="danger">
+        <div *ngFor="let error of errors; let i = index"><strong>{{i+1}}</strong> {{error}}</div>
+    </alert>
+</div>
+
+<div class="container-lg">
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="card b">
+                <div class="card-header bg-gray-lighter text-bold">SSO Settings</div>
+                <div class="list-group">
+                    <a href="#" class="list-group-item" (click)="settingSection=1" [ngClass]="{'active': (settingSection == 1)}">Emails</a>
+                    <a href="#" class="list-group-item" (click)="settingSection=2" [ngClass]="{'active': (settingSection == 2)}">Storage</a>
+                    <a href="#" class="list-group-item" (click)="settingSection=3" [ngClass]="{'active': (settingSection == 3)}">Recaptcha</a>
+                    <a href="#" class="list-group-item" (click)="settingSection=4" [ngClass]="{'active': (settingSection == 4)}">LDAP</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div *ngIf="settingSection == 1">
+                <app-email-settings *ngIf="settings.length" [model]="settings" [(errors)]="errors"></app-email-settings>
+            </div>
+            <div *ngIf="settingSection == 2">
+                <app-storage-settings *ngIf="settings.length" [model]="settings" [(errors)]="errors"></app-storage-settings>
+            </div>
+            <div *ngIf="settingSection == 3">
+                <app-recaptcha *ngIf="settings.length" [model]="settings" [(errors)]="errors"></app-recaptcha>
+            </div>
+            <div *ngIf="settingSection == 4">
+                <app-ldap *ngIf="settings.length" [model]="settings" [(errors)]="errors"></app-ldap>
+            </div>
+        </div>
+    </div>
+</div>
+
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
