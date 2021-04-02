@@ -1,128 +1,89 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
-using IdentityServer4.Events;
+using CoreLib.Services.Otp;
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Serilog;
 using Serilog.Context;
-using SSO;
-using SSO.Models;
+using SSO.Controllers;
+using SSO.Identity;
 
-namespace IdentityServer4.Plus.UserInteraction
+namespace IdentityServer4.Plus.Modules.Authentication.Pages
 {
-    public class LoginByOtpPage : PageModel
+    public class LoginOtp : PageModel
     {
-        private string otpCode;
+        private readonly ApplicationUserManager _userManager;
+        private readonly ILogger _logger;
+        private readonly IOtpService _otpService;
+        private readonly IIdentityServerInteractionService _identityServerInteractionService;
+        private readonly ISmsService _smsService;
 
-        [Required]
-        public string MobileNumber
+        public LoginOtp(ApplicationUserManager userManager, ILogger logger, IOtpService otpService
+            , IIdentityServerInteractionService identityServerInteractionService, ISmsService smsService)
         {
-            get;
-            set;
+            _userManager = userManager;
+            _logger = logger;
+            _otpService = otpService;
+            _identityServerInteractionService = identityServerInteractionService;
+            _smsService = smsService;
         }
+
+        
         [Required]
-        [StringLength(10)]
-        public string OtpCode { get => otpCode; set => otpCode = value.RemoveStartingZeroIfExists(); }
+        [StringLength(30)]
+        [BindProperty(SupportsGet = true)]
+        public string MobileNumber { get; set; }
         [Required]
         [StringLength(2048)]
+        [BindProperty(SupportsGet = true)]
         public string ReturnUrl { get; set; }
         
-        [StringLength(2048)]
-        public string Referrer { get; set; }
-        public void OnGet()
+        public IActionResult OnGet()
         {
-            
+            return Page();
         }
 
-        // public async Task<IActionResult> OnPost()
-        // {
-        //     if (!ModelState.IsValid)
-        //     {
-        //         return Page();
-        //     }
-        //     
-        //     using var logContext = LogContext.PushProperty("MobileNumber", byOtpModel.MobileNumber);
-        //
-        //     var context = await _identityServerInteractionService.GetAuthorizationContextAsync(byOtpModel.ReturnUrl);
-        //     if (context == null)
-        //     {
-        //         _logger.Verbose("ReturnUrl invalid, cannot find authorization context", ModelState.Values);
-        //         return BadRequest();
-        //     }
-        //
-        //     if (!ModelState.IsValid)
-        //     {
-        //         _logger.Verbose("Invalid {@Input}", ModelState.Values);
-        //         return BadRequest(ModelState);
-        //     }
-        //
-        //     var existingUsers = await _userManager.FindAllByPhoneNumberAsync(byOtpModel.MobileNumber);
-        //
-        //     var existingUser = existingUsers.FirstOrDefault();
-        //     if (existingUser == null)
-        //     {
-        //         if (_otp.IsValidOtp(byOtpModel.MobileNumber, byOtpModel.OtpCode))
-        //         {
-        //             await _signinManager.SignInPartial(byOtpModel.MobileNumber);
-        //             return Ok(new LoginResult() {MustRegister = true});
-        //         }
-        //         else
-        //         {
-        //             _logger.Information("Invalid otp for new user");
-        //             return Unauthorized();
-        //         }
-        //     }
-        //     else
-        //     {
-        //         var isUserLockedOut = await _userManager.IsLockedOutAsync(existingUser);
-        //         if (isUserLockedOut)
-        //         {
-        //             _logger.Information("{@User} locked-out prior to anomaly", existingUser);
-        //             await _events.RaiseAsync(new UserLoginFailureEvent(byOtpModel.MobileNumber, "account locked-out", clientId: context?.Client.ClientId));
-        //             await _userManager.AccessFailedAsync(existingUser);
-        //             return Unauthorized();
-        //         }
-        //         var isUserLogonEnabled = await _userManager.IsUserLogonEnabledAsync(existingUser);
-        //         if (!isUserLogonEnabled)
-        //         {
-        //             _logger.Information("{@User} logon is not enabled", existingUser);
-        //             await _events.RaiseAsync(new UserLoginFailureEvent(byOtpModel.MobileNumber, "account logon not enabled", clientId: context?.Client.ClientId));
-        //             await _userManager.AccessFailedAsync(existingUser);
-        //             return Unauthorized();
-        //         }
-        //
-        //         var isValidOtp = await _userManager.VerifyChangePhoneNumberTokenAsync(existingUser, byOtpModel.OtpCode, byOtpModel.MobileNumber);
-        //         if (isValidOtp)
-        //         {
-        //             await _signinManager.SignInPartial(byOtpModel.MobileNumber);
-        //             return Ok(new LoginResult()
-        //             {
-        //                 MustSelectUser = true,
-        //                 AvailableUsers = existingUsers.Select(x => new AvailableUser()
-        //                 {
-        //                     FullName = $"{x.FirstName} {x.LastName}",
-        //                     Username = x.UserName
-        //                 }).ToList(),
-        //             });
-        //         }
-        //         else
-        //         {
-        //             _logger.Information("Invalid otp for user {@User}", existingUser);
-        //             await _events.RaiseAsync(new UserLoginFailureEvent(byOtpModel.MobileNumber, "invalid otp", clientId: context?.Client.ClientId));
-        //             await _userManager.AccessFailedAsync(existingUser);
-        //             return Unauthorized();
-        //         }
-        //     }
-        // }
-        
-        private string MaskMobileNumber(string mobile)
+        public async Task<IActionResult> OnPost()
         {
-            if (string.IsNullOrWhiteSpace(mobile) || mobile.Length < 9)
+            if (!ModelState.IsValid)
             {
-                return string.Empty;
+                _logger.Verbose("Invalid {@Input}", ModelState.Values);
+                return Page();
             }
-
-            return mobile.Remove(4, 3).Insert(4, "***");
+            var context = await _identityServerInteractionService.GetAuthorizationContextAsync(ReturnUrl);
+            if (context == null)
+            {
+                _logger.Verbose("ReturnUrl invalid, cannot find authorization context", ModelState.Values);
+                return BadRequest();
+            }
+            
+            using var logContext = LogContext.PushProperty("MobileNumber", MobileNumber);
+            var existingUsers = await _userManager.FindAllByPhoneNumberAsync(MobileNumber);
+            string otpCode;
+            if (!existingUsers.Any())
+            {
+                _logger.Information("User not exists, trying to authenticate for registration", ModelState.Values);
+                otpCode = _otpService.GenerateOtp(MobileNumber);
+            }
+            else
+            {
+                _logger.Information("User already exists, generating user otp", ModelState.Values);
+                otpCode = await _userManager.GenerateChangePhoneNumberTokenAsync(existingUsers[0], MobileNumber);
+            }
+            
+            await this.SendOtpCode(MobileNumber, otpCode);
+            return RedirectToPage("VerifyOtp");
         }
-
+        private async Task SendOtpCode(string mobileNumber, string otpCode)
+        {
+            _logger.Verbose("Sending {@Otp}", otpCode);
+            await _smsService.Send(new OutgoingSms()
+            {
+                Reciever = mobileNumber,
+                Text = $"کد فعال سازی شما: {otpCode}"
+            });
+        }
     }
 }

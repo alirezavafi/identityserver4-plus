@@ -1,1 +1,35 @@
 ﻿@page
+@model IdentityServer4.Plus.Modules.Authentication.Pages.Otp
+
+@{
+    Layout = "_Layout";
+}
+
+<form class="login100-form validate-form">
+    @* <span class="login100-form-title p-b-37"> *@
+    @*     Sign In *@
+    @* </span> *@
+    <h1 class="display-4">Welcome</h1>
+    
+    <div class="wrap-input100 validate-input m-b-20" data-validate="Enter mobile">
+        <input class="input100" type="text" name="mobile" placeholder="mobile">
+        <span class="focus-input100"></span>
+    </div>
+
+    <div class="container-login100-form-btn">
+        <button class="login100-form-btn">
+            Sign In
+        </button>
+    </div>
+    <div class="text-center p-t-57 p-b-20">
+    </div>
+
+    <div class="flex-c p-b-112">
+    </div>
+
+    @* <div class="text-center"> *@
+    @*     <a href="assets/#" class="txt2 hov1"> *@
+    @*         Sign Up *@
+    @*     </a> *@
+    @* </div> *@
+</form>

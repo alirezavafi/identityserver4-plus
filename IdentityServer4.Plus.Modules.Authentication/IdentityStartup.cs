@@ -20,15 +20,6 @@ using SSO.Identity.Stores.EntityFramework;
 
 namespace IdentityServer4.Plus.Modules.Authentication
 {
-    public class IdentityServerPlusOptions
-    {
-        public int SsoLifeTimeInMinutes { get; set; } = 120;
-        public bool SsoIsSlidingExpiration { get; set; } = false;
-        public Action<DbContextOptionsBuilder> DbContextConfiguration { get; set; }
-        public string TokenSigningCertificatePath { get; set; }
-        public string TokenSigningCertificationPassword { get; set; }
-    }
-    
     public static class IdentityStartup
     {
         public static IServiceCollection AddApplicationIdentity(this IServiceCollection services, IdentityServerPlusOptions opt, IHostEnvironment env)

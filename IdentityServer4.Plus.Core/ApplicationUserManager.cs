@@ -35,5 +35,10 @@ namespace SSO.Identity
         {
 			return store.FindByAnyIdentifierAsync(identifier, cancellationToken);
         }
+
+        public Task<List<ApplicationUser>> FindAllByPhoneNumberAsync(string mobileNumber, CancellationToken cancellationToken = default)
+        {
+            return store.FindByPhoneNumberAsync(mobileNumber, cancellationToken);
+        }
     }
 }
